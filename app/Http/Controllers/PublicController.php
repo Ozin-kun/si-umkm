@@ -18,4 +18,13 @@ class PublicController extends Controller
 
         return view('welcome', compact('umkms'));
     }
+
+    public function show($id)
+    {
+        // Cari UMKM berdasarkan ID, pastikan statusnya 'Disetujui'
+        // Sekalian bawa data relasi 'category' dan 'products' agar tidak bolak-balik ke database
+        $umkm = Umkm::with(['category', 'products'])->where('status', 'Disetujui')->findOrFail($id);
+
+        return view('umkm-detail', compact('umkm'));
+    }
 }

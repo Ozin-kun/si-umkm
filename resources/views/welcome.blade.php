@@ -61,7 +61,9 @@
                                     {{ $u->category->name }}
                                 </span>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $u->name }}</h3>
+                            <a href="{{ route('public.umkm.show', $u->id) }}">
+                                <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-indigo-600 transition-colors">{{ $u->name }}</h3>
+                            </a>
                             <p class="text-gray-600 text-sm mb-4 line-clamp-3">
                                 {{ $u->description ?? 'Pelaku usaha ini belum menambahkan deskripsi detail mengenai bisnis mereka.' }}
                             </p>

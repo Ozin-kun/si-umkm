@@ -12,9 +12,17 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <!-- Menu Dashboard Cerdas (Bisa Admin / UMKM) -->
                     <x-nav-link :href="Auth::user()->role_id == 1 ? route('admin.dashboard') : route('umkm.dashboard')" :active="request()->routeIs('admin.dashboard') || request()->routeIs('umkm.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <!-- Menu Tambahan: Katalog Produk (Hanya Muncul untuk UMKM / role_id 2) -->
+                    @if(Auth::user()->role_id == 2)
+                        <x-nav-link :href="route('umkm.product.index')" :active="request()->routeIs('umkm.product.*')">
+                            {{ __('Katalog Produk') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -52,7 +60,7 @@
                 </x-dropdown>
             </div>
 
-            <!-- Hamburger -->
+            <!-- Hamburger (Tombol Menu HP) -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -64,12 +72,20 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
+    <!-- Responsive Navigation Menu (Tampilan Layar HP) -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
+            <!-- Menu Dashboard Mobile Cerdas -->
             <x-responsive-nav-link :href="Auth::user()->role_id == 1 ? route('admin.dashboard') : route('umkm.dashboard')" :active="request()->routeIs('admin.dashboard') || request()->routeIs('umkm.dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <!-- Menu Tambahan: Katalog Produk Mobile (Hanya Muncul untuk UMKM) -->
+            @if(Auth::user()->role_id == 2)
+                <x-responsive-nav-link :href="route('umkm.product.index')" :active="request()->routeIs('umkm.product.*')">
+                    {{ __('Katalog Produk') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

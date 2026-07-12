@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UmkmController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [PublicController::class, 'index'])->name('home');
+
+// Halaman Detail UMKM & Katalog Produk
+Route::get('/umkm/{id}', [PublicController::class, 'show'])->name('public.umkm.show');
 
 // --------------------------------------------------------
 // ROUTE KHUSUS ADMIN DESA (Membutuhkan Login & Role Admin)
@@ -42,6 +46,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 Route::middleware(['auth', 'umkm'])->prefix('dashboard')->group(function () {
     Route::get('/', [UmkmController::class, 'index'])->name('umkm.dashboard');
     Route::post('/simpan', [UmkmController::class, 'store'])->name('umkm.store');
+
+    // Rute CRUD Produk
+    Route::get('/produk', [ProductController::class, 'index'])->name('umkm.product.index');
+    Route::get('/produk/tambah', [ProductController::class, 'create'])->name('umkm.product.create');
+    Route::post('/produk', [ProductController::class, 'store'])->name('umkm.product.store');
+
+    // Rute untuk Edit dan Hapus
+    Route::get('/produk/{id}/edit', [ProductController::class, 'edit'])->name('umkm.product.edit');
+    Route::put('/produk/{id}', [ProductController::class, 'update'])->name('umkm.product.update');
+    Route::delete('/produk/{id}', [ProductController::class, 'destroy'])->name('umkm.product.destroy');
 });
 
 Route::middleware('auth')->group(function () {
