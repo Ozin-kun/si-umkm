@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UmkmController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -26,18 +27,11 @@ Route::get('/umkm/{id}', [PublicController::class, 'show'])->name('public.umkm.s
 // --------------------------------------------------------
 // ROUTE KHUSUS ADMIN DESA (Membutuhkan Login & Role Admin)
 // --------------------------------------------------------
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-});
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::post('/verify/{id}', [AdminController::class, 'verify'])->name('verify');
 
-// --------------------------------------------------------
-// ROUTE KHUSUS ADMIN DESA (Membutuhkan Login & Role Admin)
-// --------------------------------------------------------
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::post('/verify/{id}', [AdminController::class, 'verify'])->name('admin.verify');
+    Route::resource('categories', CategoryController::class)->except(['show']);
 });
 
 // --------------------------------------------------------

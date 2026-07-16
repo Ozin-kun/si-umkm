@@ -1,47 +1,40 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="text-xl font-semibold leading-tight tracking-tight text-slate-900">
             {{ __('Dashboard Pelaku UMKM') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            
-            @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
-            @endif
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+    <div class="py-4">
+        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <div class="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-sm">
+                <div class="p-6 text-slate-800 sm:p-8">
                     
-                    <h3 class="text-lg font-bold mb-4">Profil Usaha Anda</h3>
+                    <h3 class="mb-4 text-lg font-semibold tracking-tight text-slate-900">Profil Usaha Anda</h3>
                     
                     @if($umkm)
-                        <div class="mb-6 p-4 rounded-md 
-                            @if($umkm->status == 'Disetujui') bg-green-50 border border-green-200 
-                            @elseif($umkm->status == 'Ditolak' || $umkm->status == 'Direvisi') bg-red-50 border border-red-200
-                            @else bg-yellow-50 border border-yellow-200 @endif">
-                            <p class="font-semibold">Status Saat Ini: 
+                        <div class="mb-6 rounded-2xl p-4 
+                            @if($umkm->status == 'Disetujui') bg-emerald-50 border border-emerald-200 
+                            @elseif($umkm->status == 'Ditolak' || $umkm->status == 'Direvisi') bg-rose-50 border border-rose-200
+                            @else bg-amber-50 border border-amber-200 @endif">
+                            <p class="font-medium text-slate-800">Status Saat Ini: 
                                 <span class="uppercase">{{ $umkm->status }}</span>
                             </p>
                         </div>
                     @endif
 
-                    <form action="{{ route('umkm.store') }}" method="POST">
+                    <form action="{{ route('umkm.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Nama Usaha</label>
+                            <label class="block text-sm font-medium text-slate-600">Nama Usaha</label>
                             <input type="text" name="name" value="{{ old('name', $umkm->name ?? '') }}" required
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                class="mt-1 block w-full rounded-2xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Kategori</label>
-                            <select name="category_id" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <label class="block text-sm font-medium text-slate-600">Kategori</label>
+                            <select name="category_id" required class="mt-1 block w-full rounded-2xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="">-- Pilih Kategori --</option>
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat->id }}" {{ (old('category_id', $umkm->category_id ?? '') == $cat->id) ? 'selected' : '' }}>
@@ -52,25 +45,81 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Nomor WhatsApp / Telepon</label>
+                            <label class="block text-sm font-medium text-slate-600">Nomor WhatsApp / Telepon</label>
                             <input type="text" name="contact" value="{{ old('contact', $umkm->contact ?? '') }}" required
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                class="mt-1 block w-full rounded-2xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Alamat Lengkap</label>
+                            <label class="block text-sm font-medium text-slate-600">Alamat Lengkap</label>
                             <textarea name="address" rows="3" required
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('address', $umkm->address ?? '') }}</textarea>
+                                class="mt-1 block w-full rounded-2xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('address', $umkm->address ?? '') }}</textarea>
+                        </div>
+
+                        @php
+                            $defaultLatitude = old('latitude', $umkm->latitude ?? '-6.2000000');
+                            $defaultLongitude = old('longitude', $umkm->longitude ?? '106.8166660');
+                        @endphp
+
+                        <div class="mb-4 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                            <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-600">Lokasi Usaha di Peta</label>
+                                    <p class="mt-1 text-xs text-slate-500">Geser marker atau klik peta untuk menentukan koordinat yang lebih presisi.</p>
+                                </div>
+                                @if(!empty($umkm?->google_maps_url))
+                                    <a href="{{ $umkm->google_maps_url }}" target="_blank" class="inline-flex items-center font-medium text-indigo-600 hover:text-indigo-700 text-sm">
+                                        Lihat lokasi saat ini di Google Maps
+                                    </a>
+                                @endif
+                            </div>
+
+                            <div
+                                class="h-80 overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                                data-umkm-location-map
+                                data-lat="{{ $defaultLatitude }}"
+                                data-lng="{{ $defaultLongitude }}"
+                            ></div>
+
+                            <input type="hidden" name="latitude" value="{{ $defaultLatitude }}" data-coordinate-lat>
+                            <input type="hidden" name="longitude" value="{{ $defaultLongitude }}" data-coordinate-lng>
+
+                            <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+                                    Latitude: <span class="font-semibold text-slate-900" data-coordinate-lat-display>{{ $defaultLatitude }}</span>
+                                </div>
+                                <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+                                    Longitude: <span class="font-semibold text-slate-900" data-coordinate-lng-display>{{ $defaultLongitude }}</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Deskripsi Singkat Usaha</label>
+                            <label class="block text-sm font-medium text-slate-600">Deskripsi Singkat Usaha</label>
                             <textarea name="description" rows="4"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description', $umkm->description ?? '') }}</textarea>
+                                class="mt-1 block w-full rounded-2xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description', $umkm->description ?? '') }}</textarea>
                         </div>
 
-                        <div class="flex items-center justify-end mt-4">
-                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-600">Foto Tempat Usaha (Bisa lebih dari satu)</label>
+                            <input type="file" name="place_images[]" multiple accept="image/*"
+                                class="mt-1 block w-full rounded-2xl border border-slate-300 p-2 text-sm text-slate-500 shadow-sm file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100">
+                            <p class="mt-1 text-xs text-slate-500">Maksimal 10 foto per upload, ukuran tiap foto maksimal 4MB.</p>
+                        </div>
+
+                        @if(!empty($umkm) && $umkm->placePhotos->count() > 0)
+                            <div class="mb-4">
+                                <p class="mb-3 text-sm font-medium text-slate-600">Foto Tempat yang Sudah Tersimpan</p>
+                                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                                    @foreach($umkm->placePhotos as $photo)
+                                        <img src="{{ asset('storage/' . $photo->image_path) }}" alt="Foto Tempat {{ $loop->iteration }}" class="h-24 w-full rounded-2xl border border-slate-200 object-cover">
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="mt-6 flex items-center justify-end">
+                            <button type="submit" class="rounded-full bg-indigo-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
                                 Simpan Profil
                             </button>
                         </div>

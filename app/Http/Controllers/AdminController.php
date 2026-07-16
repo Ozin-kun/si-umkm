@@ -12,9 +12,15 @@ class AdminController extends Controller
     // Menampilkan daftar UMKM di dashboard Admin
     public function index()
     {
+        // Menghitung statistik pendaftaran
+        $totalUmkm = Umkm::count();
+        $pendingUmkm = Umkm::where('status', 'Menunggu Verifikasi')->count();
+        $approvedUmkm = Umkm::where('status', 'Disetujui')->count();
+        $rejectedUmkm = Umkm::whereIn('status', ['Ditolak', 'Direvisi', 'Nonaktif'])->count();
+
         // Mengambil semua data UMKM beserta relasi user dan kategorinya, diurutkan dari yang terbaru
         $umkms = Umkm::with(['user', 'category'])->orderBy('created_at', 'desc')->get();
-        return view('admin.dashboard', compact('umkms'));
+        return view('admin.dashboard', compact('umkms','totalUmkm','pendingUmkm','approvedUmkm','rejectedUmkm'));
     }
 
     // Memproses perubahan status verifikasi
