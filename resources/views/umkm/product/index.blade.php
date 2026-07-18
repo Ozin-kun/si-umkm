@@ -28,7 +28,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-sm font-light text-slate-600">
-                                @forelse($products as $p)
+                                @foreach($products as $p)
                                     <tr class="border-b border-slate-200 hover:bg-slate-50">
                                         <td class="px-6 py-4">
                                             @if($p->image_path)
@@ -67,12 +67,8 @@
                                                 </form>
                                             </div>
                                         </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-8 text-center text-slate-500">Belum ada produk yang ditambahkan ke etalase.</td>
-                                    </tr>
-                                @endforelse
+                                    </tr>                                
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

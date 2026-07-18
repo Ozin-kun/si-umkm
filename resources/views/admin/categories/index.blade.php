@@ -1,3 +1,4 @@
+<x-loading />
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between gap-4">
@@ -32,7 +33,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-sm font-light text-slate-600">
-                                @forelse($categories as $category)
+                                @foreach($categories as $category)
                                     <tr class="border-b border-slate-200 hover:bg-slate-50">
                                         <td class="px-6 py-4 font-medium text-slate-900">{{ $category->name }}</td>
                                         <td class="max-w-lg px-6 py-4 truncate">{{ $category->description ?? '-' }}</td>
@@ -63,12 +64,8 @@
                                                 </form>
                                             </div>
                                         </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="px-6 py-8 text-center text-slate-500">Belum ada kategori yang dibuat.</td>
-                                    </tr>
-                                @endforelse
+                                    </tr>                                
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

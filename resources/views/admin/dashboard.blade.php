@@ -1,3 +1,4 @@
+<x-loading />
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -93,7 +94,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-gray-600 text-sm font-light">
-                                @forelse($umkms as $u)
+                                @foreach($umkms as $u)
                                     <tr class="border-b border-gray-200 hover:bg-gray-50">
                                         <td class="py-3 px-6 text-left whitespace-nowrap">
                                             <div class="font-bold text-gray-800">{{ $u->name }}</div>
@@ -128,12 +129,8 @@
                                                 </button>
                                             </form>
                                         </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="py-6 px-6 text-center text-gray-500">Belum ada data UMKM yang terdaftar.</td>
-                                    </tr>
-                                @endforelse
+                                    </tr>                                
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -141,5 +138,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
 </x-app-layout>
