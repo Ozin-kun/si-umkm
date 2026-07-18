@@ -73,12 +73,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     </svg>
                                     <span id="gps-text">Gunakan Lokasi Saat Ini</span>
-                                </button>
-                                @if(!empty($umkm?->google_maps_url))
-                                    <a href="{{ $umkm->google_maps_url }}" target="_blank" class="inline-flex items-center font-medium text-indigo-600 hover:text-indigo-700 text-sm">
-                                        Lihat lokasi saat ini di Google Maps
-                                    </a>
-                                @endif
+                                </button>                                
                             </div>
 
                             <div
@@ -99,6 +94,18 @@
                                     Longitude: <span class="font-semibold text-slate-900" data-coordinate-lng-display>{{ $defaultLongitude }}</span>
                                 </div>
                             </div>
+
+                            @if(!empty($umkm?->google_maps_url))
+                                <div class="mt-4 flex justify-end">
+                                    <a href="{{ $umkm->google_maps_url }}" target="_blank" class="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-700">
+                                        <!-- Menambahkan ikon map lipat agar konsisten dengan halaman welcome -->
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                        </svg>
+                                        Lihat lokasi saat ini di Google Maps
+                                    </a>
+                                </div>
+                            @endif
                         </div>
 
                         <div class="mb-4">
