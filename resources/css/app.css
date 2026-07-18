@@ -5,3 +5,9 @@
 [x-cloak] {
 	display: none !important;
 }
+
+.dt-length select,
+.dataTables_length select {
+    padding-right: 2.5rem !important;
+    min-width: 4.5rem !important;
+}

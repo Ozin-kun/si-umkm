@@ -124,10 +124,10 @@ window.initDataTables = function (root = document) {
 				infoEmpty: 'Tidak ada data',
 				zeroRecords: 'Data tidak ditemukan',
 				paginate: {
-					first: 'Awal',
-					last: 'Akhir',
-					next: 'Berikut',
-					previous: 'Sebelumnya',
+					first: 'First',
+					last: 'Last',
+					next: 'Next',
+					previous: 'Previous',
 				},
 			},
 		});
