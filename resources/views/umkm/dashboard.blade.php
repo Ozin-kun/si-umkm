@@ -7,7 +7,7 @@
 
     <div class="py-4">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <div class="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-sm">
+            <div class="overflow-hidden rounded-3xl border border-slate-300 bg-white shadow-sm backdrop-blur-sm">
                 <div class="p-6 text-slate-800 sm:p-8">
                     
                     <h3 class="mb-4 text-lg font-semibold tracking-tight text-slate-900">Profil Usaha Anda</h3>
@@ -57,8 +57,8 @@
                         </div>
 
                         @php
-                            $defaultLatitude = old('latitude', $umkm->latitude ?? '-6.2000000');
-                            $defaultLongitude = old('longitude', $umkm->longitude ?? '106.8166660');
+                            $defaultLatitude = old('latitude', $umkm->latitude ?? '-7.719814');
+                            $defaultLongitude = old('longitude', $umkm->longitude ?? '110.515290');
                         @endphp
 
                         <div class="mb-4 rounded-3xl border border-slate-200 bg-slate-50 p-4">
@@ -67,6 +67,13 @@
                                     <label class="block text-sm font-medium text-slate-600">Lokasi Usaha di Peta</label>
                                     <p class="mt-1 text-xs text-slate-500">Geser marker atau klik peta untuk menentukan koordinat yang lebih presisi.</p>
                                 </div>
+
+                                <button type="button" id="btn-gps" class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-3 text-xs font-medium text-indigo-700 transition-colors hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    <span id="gps-text">Gunakan Lokasi Saat Ini</span>
+                                </button>
                                 @if(!empty($umkm?->google_maps_url))
                                     <a href="{{ $umkm->google_maps_url }}" target="_blank" class="inline-flex items-center font-medium text-indigo-600 hover:text-indigo-700 text-sm">
                                         Lihat lokasi saat ini di Google Maps
@@ -128,5 +135,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
 </x-app-layout>

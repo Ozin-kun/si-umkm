@@ -71,13 +71,13 @@ window.adminCategoryPage = function () {
 window.confirmDangerousAction = async function (form, options = {}) {
 	const result = await Swal.fire({
 		title: options.title ?? 'Apakah Anda yakin?',
-		text: options.text ?? 'Tindakan ini tidak dapat dibatalkan.',
-		icon: 'warning',
+		text: options.text ?? 'Data akan dihapus permanen.',
+		icon: 'question',
 		showCancelButton: true,
 		confirmButtonText: options.confirmButtonText ?? 'Ya, lanjutkan',
 		cancelButtonText: 'Batal',
-		confirmButtonColor: options.confirmButtonColor ?? '#e11d48',
-		cancelButtonColor: '#e2e8f0',
+		confirmButtonColor: options.confirmButtonColor ?? '#4F46E5',
+		cancelButtonColor: '#DD3333',
 		background: '#ffffff',
 		color: '#0f172a',
 	});
@@ -172,8 +172,8 @@ window.initUmkmLocationMaps = function (root = document) {
 		const lngInput = element.closest('form')?.querySelector('[data-coordinate-lng]');
 		const latDisplay = element.closest('form')?.querySelector('[data-coordinate-lat-display]');
 		const lngDisplay = element.closest('form')?.querySelector('[data-coordinate-lng-display]');
-		const fallbackLat = Number(element.dataset.lat || -6.2000000);
-		const fallbackLng = Number(element.dataset.lng || 106.8166660);
+		const fallbackLat = Number(element.dataset.lat || -7.719814);
+		const fallbackLng = Number(element.dataset.lng || 110.515290);
 		const initialLat = Number(latInput?.value || fallbackLat);
 		const initialLng = Number(lngInput?.value || fallbackLng);
 		const map = L.map(element, {
@@ -209,6 +209,70 @@ window.initUmkmLocationMaps = function (root = document) {
 			marker.setLatLng(event.latlng);
 			syncCoordinates(event.latlng.lat, event.latlng.lng);
 		});
+
+		// Find Location now
+		const btnGps = document.getElementById('btn-gps');
+		const gpsText = document.getElementById('gps-text');
+
+		if (btnGps) {
+			const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+			btnGps.addEventListener('click', function() {
+				if (navigator.geolocation) {
+					// Ubah teks dan matikan tombol sementara
+					gpsText.textContent = "Mencari lokasi...";
+					btnGps.classList.add('opacity-75', 'cursor-not-allowed');
+
+					navigator.geolocation.getCurrentPosition(
+						function(position) {
+							const newLat = position.coords.latitude;
+							const newLng = position.coords.longitude;
+
+							// Pindahkan peta dan marker
+							map.setView([newLat, newLng], 17);
+							marker.setLatLng([newLat, newLng]);
+							
+							// Gunakan fungsi bawaan Anda untuk update input & text
+							syncCoordinates(newLat, newLng);
+
+							// Kembalikan status tombol
+							gpsText.textContent = "Lokasi Berhasil Diambil!";
+							Toast.fire({
+								icon: 'success',
+								title: 'Titik koordinat berhasil diperbarui'
+							});
+							setTimeout(() => {
+								gpsText.textContent = "Gunakan Lokasi Saat Ini";
+								btnGps.classList.remove('opacity-75', 'cursor-not-allowed');
+							}, 3000);
+						},
+						function(error) {
+							Toast.fire({
+								icon: 'error',
+								title: 'Gagal mendapatkan lokasi. Akses ditolak / gagal'
+							});
+							gpsText.textContent = "Gunakan Lokasi Saat Ini";
+							btnGps.classList.remove('opacity-75', 'cursor-not-allowed');
+						},
+						{ enableHighAccuracy: true }
+					);
+				} else {
+					Toast.fire({
+						icon: 'warning',
+						title: 'Browser tidak mendukung GPS.'
+					});
+				}
+			});
+		}
 
 		syncCoordinates(initialLat, initialLng);
 		element.dataset.initialized = 'true';
