@@ -33,7 +33,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-slate-600">Kategori</label>
+                            {{-- <label class="block text-sm font-medium text-slate-600">Kategori</label>
                             <select name="category_id" required class="mt-1 block w-full rounded-2xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="">-- Pilih Kategori --</option>
                                 @foreach($categories as $cat)
@@ -41,7 +41,62 @@
                                         {{ $cat->name }}
                                     </option>
                                 @endforeach
-                            </select>
+                            </select> --}}
+                            <div class="mb-4" x-data="{
+                                open: false,
+                                value: '{{ old('category_id', $umkm->category_id ?? '') }}',
+                                label: '-- Pilih Kategori --',
+                                options: [
+                                    { id: '', name: '-- Pilih Kategori --' },
+                                    @foreach($categories as $cat)
+                                    { id: '{{ $cat->id }}', name: '{{ $cat->name }}' },
+                                    @endforeach
+                                ],
+                                init() {
+                                    const selected = this.options.find(opt => opt.id == this.value);
+                                    if (selected) {
+                                        this.label = selected.name;
+                                    }
+                                },
+                                selectOption(id, name) {
+                                    this.value = id;
+                                    this.label = name;
+                                    this.open = false;
+                                }
+                            }">
+                                <label class="block text-sm font-medium text-slate-600">Kategori</label>
+                                
+                                <input type="hidden" name="category_id" :value="value">
+
+                                <div class="relative mt-1" @click.outside="open = false">
+                                    <button type="button" @click="open = !open"
+                                        class="flex w-full items-center justify-between rounded-2xl border border-slate-300 bg-white px-3 py-2 text-left shadow-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                        :class="open ? 'border-indigo-500 ring-1 ring-indigo-500' : 'hover:border-slate-400'">
+                                                                                
+                                        <span x-text="label" class="truncate" :class="value === '' ? 'text-slate-500' : 'text-slate-900'"></span>
+                                                                                
+                                        <svg class="h-5 w-5 text-slate-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+
+                                    <div x-show="open"
+                                        x-transition.opacity
+                                        x-transition:enter.duration.200ms
+                                        x-transition:leave.duration.150ms
+                                        style="display: none;"
+                                        class="absolute z-50 mt-2 max-h-60 w-full overflow-auto rounded-2xl border border-slate-200 bg-white py-1 shadow-lg">
+                                        <template x-for="option in options" :key="option.id">                                            
+                                            <div @click="selectOption(option.id, option.name)"
+                                                class="cursor-pointer px-4 py-2.5 transition-colors hover:bg-indigo-50 hover:text-indigo-700"
+                                                :class="value == option.id ? 'bg-indigo-50 font-medium text-indigo-700' : 'text-slate-700'"
+                                            >
+                                                <span x-text="option.name"></span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-4">

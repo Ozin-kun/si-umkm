@@ -19,6 +19,7 @@
         }
     </style>
 </head>
+<x-loading />
 <body class="bg-gradient-to-b from-slate-50 via-white to-indigo-50 text-slate-800 antialiased font-sans">
 
     <nav class="sticky top-0 z-20 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
@@ -52,30 +53,85 @@
                     Portal UMKM Desa
                 </div>
                 <h1 class="text-4xl font-semibold tracking-tight text-slate-900 sm:text-6xl">
-                    Eksplorasi potensi lokal dengan tampilan yang lebih bersih.
+                    Eksplorasi potensi lokal.
                 </h1>
                 <p class="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-                    Temukan produk unggulan, kerajinan tangan, dan kuliner autentik dari pelaku usaha mikro desa dalam katalog yang sederhana, rapi, dan mudah dijelajahi.
+                    Temukan produk unggulan, kerajinan tangan, dan kuliner autentik dari pelaku usaha mikro desa Joho Prambanan Klaten.
                 </p>
             </div>
         </div>
     </div>
 
     <div class="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div class="mb-8 flex flex-col gap-4 border-y border-slate-200/80 py-6 md:flex-row md:items-end md:justify-between">
+        <div class="mb-10 flex flex-col gap-4 border-y border-slate-200/80 py-6 md:flex-row md:items-end md:justify-between">
             <div>
                 <h2 class="text-2xl font-semibold tracking-tight text-slate-900">Katalog usaha terverifikasi</h2>
-                <p class="mt-1 text-sm text-slate-500">Disusun untuk membantu warga dan pengunjung menemukan usaha secara cepat.</p>
+                <p class="mt-1 text-sm text-slate-500">Disusun untuk membantu warga dan pengunjung menemukan usaha di desa Joho secara cepat.</p>
             </div>
             <form action="{{ route('home') }}" method="GET" class="flex w-full flex-col gap-3 sm:flex-row md:w-auto">
-                <select name="kategori" class="rounded-full border-slate-300 bg-white px-4 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                {{-- <select name="kategori" onchange="this.form.submit()" class="rounded-full border-slate-300 bg-white px-4 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Semua Kategori</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ request('kategori') == $cat->id ? 'selected' : '' }}>
                             {{ $cat->name }}
                         </option>
                     @endforeach
-                </select>
+                </select> --}}
+                <div x-data="{
+                        open: false,
+                        value: '{{ request('kategori') }}',
+                        label: 'Semua Kategori',
+                        options: [
+                            { id: '', name: 'Semua Kategori' },
+                            @foreach($categories as $cat)
+                            { id: '{{ $cat->id }}', name: '{{ $cat->name }}' },
+                            @endforeach
+                        ],
+                        init() {
+                            // Mencocokkan label saat halaman dimuat (jika ada kategori yang sedang aktif)
+                            const selected = this.options.find(opt => opt.id == this.value);
+                            if (selected) this.label = selected.name;
+                        },
+                        selectOption(id, name) {
+                            this.value = id;
+                            this.label = name;
+                            this.open = false;
+                            // Submit form otomatis setelah memilih opsi
+                            this.$nextTick(() => { this.$el.closest('form').submit(); });
+                        }
+                    }"
+                    class="relative w-full sm:w-56"
+                    @click.outside="open = false"
+                >                    
+                    <input type="hidden" name="kategori" :value="value">
+
+                    <!-- Tombol Trigger Dropdown -->
+                    <button type="button" @click="open = !open"
+                        class="flex w-full items-center justify-between rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <span x-text="label" class="truncate"></span>
+                        <svg class="h-4 w-4 text-slate-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Kotak Menu Dropdown -->
+                    <div x-show="open"
+                         x-transition.opacity
+                         x-transition:enter.duration.200ms
+                         x-transition:leave.duration.150ms
+                         style="display: none;"
+                         class="absolute z-50 mt-2 max-h-60 w-full overflow-auto rounded-2xl border border-slate-200 bg-white py-1 shadow-lg">
+                        <template x-for="option in options" :key="option.id">
+                            <!-- Baris Opsi -->
+                            <div @click="selectOption(option.id, option.name)"
+                                 class="cursor-pointer px-4 py-2.5 text-sm transition-colors hover:bg-indigo-50 hover:text-indigo-700"
+                                 :class="value == option.id ? 'bg-indigo-50 font-medium text-indigo-700' : 'text-slate-700'"
+                            >
+                                <span x-text="option.name"></span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
 
                 <div class="relative flex-1 sm:w-72">
                     <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari nama usaha..."
@@ -98,7 +154,7 @@
         @if($umkms->count() > 0)
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach($umkms as $u)
-                    <div data-reveal style="transition-delay: {{ $loop->index * 80 }}ms" class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-sm hover:shadow-lg">
+                    <div data-reveal style="transition-delay: {{ $loop->index * 80 }}ms" class="group flex flex-col overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-md hover:-translate-y-1 hover:shadow-xl backdrop-blur-sm hover:border-indigo-300 ">
                         <div class="flex-1 p-6">
                             <div class="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
                                 @if($u->placePhotos->count() > 0)
@@ -136,7 +192,10 @@
                                 {{ $u->contact }}
                             </div>
                             @if($u->google_maps_url)
-                                <a href="{{ $u->google_maps_url }}" target="_blank" class="mt-3 inline-flex items-center text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-700">
+                                <a href="{{ $u->google_maps_url }}" target="_blank" class="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-800">                                    
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                    </svg>
                                     Buka Lokasi di Google Maps
                                 </a>
                             @endif
@@ -167,7 +226,7 @@
             </div>
         @endif
     </div>
-
+<x-footer />
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var targets = document.querySelectorAll('[data-reveal]');

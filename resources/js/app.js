@@ -282,7 +282,7 @@ window.initUmkmLocationMaps = function (root = document) {
 document.addEventListener('DOMContentLoaded', () => {
 	window.initAutoCarousels();
 	window.initUmkmLocationMaps();
-	window.initDataTables();
+	window.initDataTables();			
 });
 
 Alpine.start();
