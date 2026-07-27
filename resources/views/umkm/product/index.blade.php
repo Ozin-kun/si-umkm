@@ -1,12 +1,13 @@
+<x-loading />
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between gap-4">
+    <x-slot name="header">        
+        <div class="flex items-center justify-between gap-4" x-data>
             <h2 class="text-xl font-semibold leading-tight tracking-tight text-slate-900">
                 {{ __('Katalog Produk UMKM') }}
-            </h2>
-            <a href="{{ route('umkm.product.create') }}" class="inline-flex items-center rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700">
+            </h2>            
+            <button type="button" @click="$dispatch('open-create-modal')" class="inline-flex items-center rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700">
                 + Tambah Produk
-            </a>
+            </button>
         </div>
     </x-slot>
 
@@ -20,17 +21,17 @@
                         <table class="w-full border-collapse text-left" data-datatable data-page-length="10">
                             <thead>
                                 <tr class="bg-slate-100 text-sm uppercase leading-normal text-slate-700">
-                                    <th class="w-32 px-6 py-3 text-left">Foto</th>
-                                    <th class="px-6 py-3 text-left">Nama Produk</th>
-                                    <th class="px-6 py-3 text-left">Harga</th>
-                                    <th class="px-6 py-3 text-left">Deskripsi</th>
-                                    <th class="px-6 py-3 text-left">Aksi</th>
+                                    <th class="w-32 px-6 py-3 text-center">Foto</th>
+                                    <th class="px-6 py-3 text-center">Nama Produk</th>
+                                    <th class="px-6 py-3 text-center">Harga</th>
+                                    <th class="px-6 py-3 text-center">Deskripsi</th>
+                                    <th class="px-6 py-3 text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="text-sm font-light text-slate-600">
                                 @foreach($products as $p)
                                     <tr class="border-b border-slate-200 hover:bg-slate-50">
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 flex justify-center">
                                             @if($p->image_path)
                                                 <img src="{{ asset('storage/' . $p->image_path) }}" alt="{{ $p->name }}" class="h-20 w-20 rounded-2xl border border-slate-200 object-cover">
                                             @else
@@ -38,13 +39,13 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 font-medium text-slate-900">{{ $p->name }}</td>
-                                        <td class="px-6 py-4 font-semibold text-slate-900">Rp {{ number_format($p->price, 0, ',', '.') }}</td>
+                                        <td class="px-6 py-4 font-semibold text-slate-900 text-center">Rp {{ number_format($p->price, 0, ',', '.') }}</td>
                                         <td class="max-w-xs px-6 py-4 truncate">{{ $p->description ?? '-' }}</td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-2">
+                                        <td class="px-6 py-4">                                            
+                                            <div class="flex items-center justify-center gap-2">
                                                 <button
                                                     type="button"
-                                                    class="inline-flex items-center rounded-full bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100"
+                                                    class="inline-flex w-20 justify-center items-center rounded-full bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100"
                                                     @click="openModal({
                                                         action: '{{ route('umkm.product.update', $p->id) }}',
                                                         product: @js([
@@ -57,11 +58,11 @@
                                                 >
                                                     Edit
                                                 </button>
-
-                                                <form action="{{ route('umkm.product.destroy', $p->id) }}" method="POST">
+                                                
+                                                <form action="{{ route('umkm.product.destroy', $p->id) }}" method="POST" class="m-0 flex">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="inline-flex items-center rounded-full bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700 transition-colors hover:bg-rose-100" @click="confirmDeleteProduct($el.closest('form'), @js($p->name))">
+                                                    <button type="button" class="inline-flex w-20 justify-center items-center rounded-full bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700 transition-colors hover:bg-rose-100" @click="confirmDeleteProduct($el.closest('form'), @js($p->name))">
                                                         Hapus
                                                     </button>
                                                 </form>
@@ -75,7 +76,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div
             x-show="open"
             x-transition.opacity
@@ -91,7 +92,7 @@
                 <div class="flex items-start justify-between border-b border-slate-100 px-6 py-4 sm:px-8">
                     <div>
                         <h3 id="edit-product-title" class="text-lg font-semibold tracking-tight text-slate-900">Edit Produk</h3>
-                        <p class="mt-1 text-sm text-slate-500">Perubahan akan disimpan tanpa pindah halaman.</p>
+                        <p class="mt-1 text-sm text-slate-500">Perubahan akan disimpan.</p>
                     </div>
                     <button type="button" class="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700" @click="closeModal()">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,22 +108,22 @@
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-slate-600">Nama Produk / Jasa</label>
-                            <input x-ref="nameInput" type="text" name="name" x-model="form.name" required class="mt-1 block w-full rounded-2xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <input x-ref="nameInput" type="text" name="name" x-model="form.name" required placeholder="Contoh: Keripik Singkong Renyah" class="mt-1 block w-full rounded-2xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-slate-600">Harga (Rupiah)</label>
-                            <input type="number" name="price" min="0" x-model="form.price" required class="mt-1 block w-full rounded-2xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <input type="number" name="price" min="0" x-model="form.price" required placeholder="Contoh: 15000" class="mt-1 block w-full rounded-2xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-slate-600">Foto Baru (Opsional)</label>
-                            <input type="file" name="image" accept="image/*" class="mt-1 block w-full rounded-2xl border border-slate-300 p-2 text-sm text-slate-500 shadow-sm file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100">
+                            <input type="file" name="image" accept="image/*" class="mt-1 block w-full rounded-2xl border border-slate-300 p-2 text-sm text-slate-500 shadow-sm file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100">
                         </div>
 
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-slate-600">Deskripsi Produk</label>
-                            <textarea name="description" rows="4" x-model="form.description" class="mt-1 block w-full rounded-2xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                            <textarea name="description" rows="4" x-model="form.description" placeholder="Jelaskan keunggulan produk, varian rasa, atau detail ukuran..." class="mt-1 block w-full rounded-2xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                         </div>
                     </div>
 
@@ -134,5 +135,63 @@
             </div>
         </div>
     </div>
+    
+    <div
+        x-data="{ openCreate: false }"
+        @open-create-modal.window="openCreate = true"
+        x-show="openCreate"
+        x-transition.opacity
+        class="fixed inset-0 z-50 flex items-center justify-center px-4 py-6"
+        style="display: none;"
+        aria-labelledby="create-product-title"
+        role="dialog"
+        aria-modal="true"
+    >
+        <div class="absolute inset-0 bg-slate-950/50" @click="openCreate = false"></div>
 
+        <div class="relative z-10 w-full max-w-2xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+            <div class="flex items-start justify-between border-b border-slate-100 px-6 py-4 sm:px-8">
+                <div>
+                    <h3 id="create-product-title" class="text-lg font-semibold tracking-tight text-slate-900">Tambah Produk Baru</h3>
+                    <p class="mt-1 text-sm text-slate-500">Tambahkan produk atau jasa baru ke etalase Anda.</p>
+                </div>
+                <button type="button" class="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700" @click="openCreate = false">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form action="{{ route('umkm.product.store') }}" method="POST" enctype="multipart/form-data" class="px-6 py-6 sm:px-8">
+                @csrf
+
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-600">Nama Produk / Jasa</label>
+                        <input type="text" name="name" required placeholder="Contoh: Keripik Singkong Renyah" class="mt-1 block w-full rounded-2xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600">Harga (Rupiah)</label>
+                        <input type="number" name="price" required min="0" placeholder="Contoh: 15000" class="mt-1 block w-full rounded-2xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600">Foto Produk</label>                        
+                        <input type="file" name="image" required accept="image/*" class="mt-1 block w-full rounded-2xl border border-slate-300 p-2 text-sm text-slate-500 shadow-sm file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-600">Deskripsi Produk</label>
+                        <textarea name="description" rows="4" placeholder="Jelaskan keunggulan produk, varian rasa, atau detail ukuran..." class="mt-1 block w-full rounded-2xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex items-center justify-end gap-3">
+                    <button type="button" class="rounded-full bg-slate-100 px-4 py-2.5 font-medium text-slate-700 transition-colors hover:bg-slate-200" @click="openCreate = false">Batal</button>
+                    <button type="submit" class="rounded-full bg-indigo-600 px-4 py-2.5 font-medium text-white transition-colors hover:bg-indigo-700">Simpan Produk</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </x-app-layout>

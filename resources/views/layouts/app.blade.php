@@ -29,9 +29,10 @@
             @endif
 
             <!-- Page Content -->
-            <main class="py-8 sm:py-10">
+            <main class="pt-8 sm:pt-10">
                 {{ $slot }}
             </main>
+            <x-loading />
         </div>
 
         @stack('scripts')

@@ -5,17 +5,23 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex shrink-0 items-center">
-                    <a href="{{ Auth::user()->role_id == 1 ? route('admin.dashboard') : route('umkm.dashboard') }}">
+                    <a href="{{ route('home') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-indigo-600" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <!-- Menu Dashboard Cerdas (Bisa Admin / UMKM) -->
-                    <x-nav-link :href="Auth::user()->role_id == 1 ? route('admin.dashboard') : route('umkm.dashboard')" :active="request()->routeIs('admin.dashboard') || request()->routeIs('umkm.dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    <!-- Menu Dashboard Cerdas -->
+                    @if(Auth::user()->role_id == 1)
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @elseif(Auth::user()->role_id == 2)
+                        <x-nav-link :href="route('umkm.dashboard')" :active="request()->routeIs('umkm.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endif
 
                     @if(Auth::user()->role_id == 1)
                         <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">

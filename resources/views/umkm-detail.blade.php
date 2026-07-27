@@ -6,6 +6,7 @@
     <title>{{ $umkm->name }} - Portal UMKM</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+<x-loading />
 <body class="bg-gradient-to-b from-slate-50 via-white to-indigo-50 text-slate-800 antialiased font-sans">
 
     <nav class="sticky top-0 z-20 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">

@@ -97,7 +97,7 @@
                             this.label = name;
                             this.open = false;
                             // Submit form otomatis setelah memilih opsi
-                            this.$nextTick(() => { this.$el.closest('form').submit(); });
+                            this.$nextTick(() => {this.$el.closest('form').requestSubmit();});
                         }
                     }"
                     class="relative w-full sm:w-56"

@@ -1,12 +1,10 @@
  <!-- NProgress CSS via CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
 
-<!-- Kustomisasi Warna NProgress agar senada dengan Tailwind Indigo-600 -->
 <style>
-    /* Mengubah warna bar utama */
     #nprogress .bar {
         background: #4f46e5 !important;
-        height: 4px !important; /* Ketebalan garis loading */
+        height: 6px !important; /* Ketebalan garis loading */
     }
     
     /* Mengubah warna efek kilap (glow) di ujung garis */

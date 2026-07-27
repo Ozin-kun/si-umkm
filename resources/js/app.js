@@ -83,7 +83,8 @@ window.confirmDangerousAction = async function (form, options = {}) {
 	});
 
 	if (result.isConfirmed && form) {
-		form.submit();
+		// form.submit();
+		form.requestSubmit();
 	}
 };
 
