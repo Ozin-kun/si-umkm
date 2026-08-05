@@ -145,6 +145,50 @@
                 </div>
             </div>
 
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6 border border-slate-200/80">
+                <div class="p-6 text-gray-900">
+                    <h3 class="text-lg font-bold mb-4">Riwayat Verifikasi Terbaru</h3>
+                    <p class="mb-6 text-gray-600">Catatan ini membantu menelusuri keputusan verifikasi dan alasan perubahan status.</p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                                    <th class="py-3 px-6">UMKM</th>
+                                    <th class="py-3 px-6">Admin</th>
+                                    <th class="py-3 px-6">Status</th>
+                                    <th class="py-3 px-6">Alasan</th>
+                                    <th class="py-3 px-6">Waktu</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 text-sm font-light">
+                                @forelse($verificationLogs as $log)
+                                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                        <td class="py-3 px-6 font-medium text-gray-800">{{ $log->umkm->name ?? '-' }}</td>
+                                        <td class="py-3 px-6">{{ $log->admin->name ?? '-' }}</td>
+                                        <td class="py-3 px-6">
+                                            <span class="rounded-full px-3 py-1 text-xs font-bold
+                                                @if($log->status == 'Disetujui') bg-green-200 text-green-700
+                                                @elseif($log->status == 'Menunggu Verifikasi') bg-yellow-200 text-yellow-700
+                                                @elseif($log->status == 'Nonaktif') bg-gray-200 text-gray-700
+                                                @else bg-red-200 text-red-700 @endif">
+                                                {{ $log->status }}
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-6">{{ $log->reason ?? '-' }}</td>
+                                        <td class="py-3 px-6">{{ $log->created_at?->format('d M Y, H:i') }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="py-6 px-6 text-center text-gray-500">Belum ada riwayat verifikasi.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- MODAL DETAIL & VERIFIKASI UMKM -->
@@ -239,7 +283,7 @@
                                         <select name="status" x-model="umkm.status" required class="block w-full rounded-xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                                             <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
                                             <option value="Disetujui">Setujui & Publikasikan</option>
-                                            <option value="Direvisi">Minta Revisi Data</option>
+                                            <option value="Revisi">Minta Revisi Data</option>
                                             <option value="Ditolak">Tolak Sepenuhnya</option>
                                             <option value="Nonaktif">Nonaktifkan Sementara</option>
                                         </select>
@@ -248,7 +292,7 @@
                                     <div>
                                         <label class="block text-sm font-medium text-slate-700 mb-1">Catatan / Alasan (Opsional)</label>
                                         <textarea name="reason" rows="3" placeholder="Contoh: Tolong perbaiki foto tempat atau alamat kurang lengkap..." class="block w-full rounded-xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
-                                        <p class="mt-1 text-xs text-slate-500">Catatan ini sangat penting jika Anda memilih status Revisi/Ditolak.</p>
+                                        <p class="mt-1 text-xs text-slate-500">Catatan wajib diisi jika Anda memilih status Revisi atau Ditolak.</p>
                                     </div>
                                     
                                     <div class="pt-2">
