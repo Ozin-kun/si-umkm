@@ -72,7 +72,7 @@
             
             <!-- Copyright -->
             <div class="mt-12 flex flex-col items-center justify-center border-emerald-900 pt-4 sm:flex-row">
-                <p class="text-sm text-emerald-100">
+                <p class="text-sm text-white">
                     &copy; 2026 SI-UMKM. All rights reserved.
                 </p>                
             </div>
