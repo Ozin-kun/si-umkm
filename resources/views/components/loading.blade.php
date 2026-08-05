@@ -3,13 +3,13 @@
 
 <style>
     #nprogress .bar {
-        background: #4f46e5 !important;
+        background: #059669 !important;
         height: 6px !important; /* Ketebalan garis loading */
     }
     
     /* Mengubah warna efek kilap (glow) di ujung garis */
     #nprogress .peg {
-        box-shadow: 0 0 10px #4f46e5, 0 0 5px #4f46e5 !important;
+        box-shadow: 0 0 10px #059669, 0 0 5px #059669 !important;
     }
 
     /* Menyembunyikan spinner lingkaran bawaan (opsional, agar lebih bersih) */
