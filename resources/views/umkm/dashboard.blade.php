@@ -13,13 +13,44 @@
                     <h3 class="mb-4 text-lg font-semibold tracking-tight text-slate-900">Profil Usaha Anda</h3>
                     
                     @if($umkm)
-                        <div class="mb-6 rounded-2xl p-4 
+                        <div class="mb-6 rounded-2xl p-4 shadow-sm 
                             @if($umkm->status == 'Disetujui') bg-emerald-50 border border-emerald-200 
-                            @elseif($umkm->status == 'Ditolak' || $umkm->status == 'Direvisi') bg-rose-50 border border-rose-200
+                            @elseif($umkm->status == 'Ditolak' || $umkm->status == 'Revisi' || $umkm->status == 'Direvisi') bg-rose-50 border border-rose-200
                             @else bg-amber-50 border border-amber-200 @endif">
-                            <p class="font-medium text-slate-800">Status Saat Ini: 
-                                <span class="uppercase">{{ $umkm->status }}</span>
-                            </p>
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">Status Profil</p>
+                                    <p class="mt-1 text-lg font-semibold text-slate-900">
+                                        <span class="uppercase">{{ strtoupper($umkm->status) }}</span>
+                                    </p>
+                                </div>
+                                <span class="rounded-full px-3 py-1 text-xs font-bold tracking-wide
+                                    @if($umkm->status == 'Disetujui') bg-emerald-100 text-emerald-700
+                                    @elseif($umkm->status == 'Ditolak' || $umkm->status == 'Revisi' || $umkm->status == 'Direvisi') bg-rose-100 text-rose-700
+                                    @else bg-amber-100 text-amber-700 @endif">
+                                    {{ strtoupper($umkm->status) }}
+                                </span>
+                            </div>
+
+                            @if(in_array($umkm->status, ['Ditolak', 'Revisi', 'Direvisi'], true))
+                                <div class="mt-4 rounded-xl border border-rose-200 bg-white/80 p-4">
+                                    <p class="text-sm font-semibold text-rose-700">Alasan verifikasi</p>
+                                    <p class="mt-2 text-sm leading-6 text-slate-700">
+                                        {{ $umkm->latestVerificationLog?->reason ?? 'Belum ada alasan yang dicatat oleh admin.' }}
+                                    </p>
+                                    <p class="mt-3 text-xs leading-5 text-slate-500">
+                                        Perbaiki data sesuai catatan di atas lalu simpan ulang profil untuk mengajukan verifikasi kembali.
+                                    </p>
+                                </div>
+                            @elseif($umkm->status == 'Disetujui')
+                                <p class="mt-3 text-sm leading-6 text-emerald-700">
+                                    Profil Anda sudah tayang di katalog publik. Perubahan data penting akan mengembalikan status ke menunggu verifikasi.
+                                </p>
+                            @else
+                                <p class="mt-3 text-sm leading-6 text-amber-700">
+                                    Profil masih menunggu peninjauan admin. Pastikan data usaha, lokasi, dan foto sudah lengkap.
+                                </p>
+                            @endif
                         </div>
                     @endif
 

@@ -47,7 +47,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             window.Swal.fire({
                 icon: 'error',
-                title: 'Periksa kembali isian',
+                title: 'Periksa kembali data yang diinputkan',
                 html: @js('<ul class="swal2-list">' . $validationErrors->map(fn ($error) => '<li>' . e($error) . '</li>')->implode('') . '</ul>'),
                 confirmButtonText: 'Tutup',
                 confirmButtonColor: '#4f46e5',
