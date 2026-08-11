@@ -14,7 +14,7 @@ class UmkmController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $umkm = $user->umkm ? $user->umkm->load('placePhotos') : null; // Mengambil data umkm jika sudah ada
+        $umkm = $user->umkm ? $user->umkm->load(['placePhotos', 'latestVerificationLog']) : null; // Mengambil data umkm jika sudah ada
         $categories = Category::all(); // Mengambil semua pilihan kategori
 
         return view('umkm.dashboard', compact('umkm', 'categories'));

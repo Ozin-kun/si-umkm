@@ -16,24 +16,33 @@ class AdminController extends Controller
         $totalUmkm = Umkm::count();
         $pendingUmkm = Umkm::where('status', 'Menunggu Verifikasi')->count();
         $approvedUmkm = Umkm::where('status', 'Disetujui')->count();
-        $rejectedUmkm = Umkm::whereIn('status', ['Ditolak', 'Direvisi', 'Nonaktif'])->count();
+        $rejectedUmkm = Umkm::whereIn('status', ['Ditolak', 'Revisi', 'Direvisi', 'Nonaktif'])->count();
 
         // Mengambil semua data UMKM beserta relasi user dan kategorinya, diurutkan dari yang terbaru
         $umkms = Umkm::with(['user', 'category', 'placePhotos'])->orderBy('created_at', 'desc')->get();
-        return view('admin.dashboard', compact('umkms','totalUmkm','pendingUmkm','approvedUmkm','rejectedUmkm'));
+        $verificationLogs = VerificationLog::with(['umkm.user', 'admin'])->latest()->limit(10)->get();
+
+        return view('admin.dashboard', compact('umkms','totalUmkm','pendingUmkm','approvedUmkm','rejectedUmkm','verificationLogs'));
     }
 
     // Memproses perubahan status verifikasi
     public function verify(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:Disetujui,Ditolak,Direvisi,Nonaktif',
-            'reason' => 'nullable|string|max:255'
+            'status' => 'required|in:Disetujui,Ditolak,Revisi,Nonaktif',
+            'reason' => 'nullable|string|max:255',
         ]);
 
+        if (in_array($request->status, ['Ditolak', 'Revisi'], true) && blank($request->reason)) {
+            return back()->withErrors([
+                'reason' => 'Alasan wajib diisi saat status ditolak atau direvisi.',
+            ])->withInput();
+        }
+
         $umkm = Umkm::findOrFail($id);
+        $umkmStatus = $request->status === 'Revisi' ? 'Direvisi' : $request->status;
         $umkm->update([
-            'status' => $request->status
+            'status' => $umkmStatus
         ]);
 
         // Catat riwayat perubahan ke tabel verification_logs

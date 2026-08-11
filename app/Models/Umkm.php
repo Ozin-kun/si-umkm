@@ -20,6 +20,8 @@ class Umkm extends Model
     public function category() { return $this->belongsTo(Category::class); }
     public function products() { return $this->hasMany(Product::class); }
     public function placePhotos() { return $this->hasMany(UmkmPhoto::class)->orderBy('sort_order'); }
+    public function verificationLogs() { return $this->hasMany(VerificationLog::class); }
+    public function latestVerificationLog() { return $this->hasOne(VerificationLog::class)->latestOfMany(); }
 
     public function getGoogleMapsUrlAttribute()
     {

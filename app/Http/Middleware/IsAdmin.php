@@ -15,8 +15,13 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Cek apakah user sudah login dan role_id = 1 (Admin Desa)
-        if (auth()->check() && auth()->user()->role_id == 1) {
+        $user = auth()->user();
+
+        // Cek apakah user sudah login dan berperan sebagai Admin Desa
+        if (auth()->check() && (
+            $user->role_id == 1 ||
+            $user->role?->name === 'Admin Desa'
+        )) {
             return $next($request);
         }
 

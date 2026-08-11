@@ -25,18 +25,38 @@ class PublicController extends Controller
             $query->where('category_id', $request->kategori);
         }
 
-        // 5. Eksekusi pencarian dan urutkan dari yang terbaru
-        $umkms = $query->latest()->get();
+        // 5. Eksekusi pencarian, urutkan dari yang terbaru, lalu paginate 12 item per halaman
+        $umkms = $query->latest()->paginate(12)->withQueryString();
+
+        if ($request->boolean('lazy')) {
+            return response()->json([
+                'html' => view('partials.public-umkm-cards', ['umkms' => $umkms->items()])->render(),
+                'next_page_url' => $umkms->nextPageUrl(),
+            ]);
+        }
 
         return view('welcome', compact('umkms', 'categories'));
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        // Cari UMKM berdasarkan ID, pastikan statusnya 'Disetujui'
-        // Sekalian bawa data relasi 'category' dan 'products' agar tidak bolak-balik ke database
-        $umkm = Umkm::with(['category', 'products', 'placePhotos'])->where('status', 'Disetujui')->findOrFail($id);
+        $search = trim((string) $request->input('search', ''));
 
-        return view('umkm-detail', compact('umkm'));
+        // Cari UMKM berdasarkan ID, pastikan statusnya 'Disetujui'
+        // Sekalian bawa data relasi 'category', 'placePhotos', dan produk yang sudah difilter
+        $umkm = Umkm::with([
+            'category',
+            'placePhotos',
+            'products' => function ($query) use ($search) {
+                if ($search !== '') {
+                    $query->where(function ($productQuery) use ($search) {
+                        $productQuery->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('description', 'like', '%' . $search . '%');
+                    });
+                }
+            },
+        ])->where('status', 'Disetujui')->findOrFail($id);
+
+        return view('umkm-detail', compact('umkm', 'search'));
     }
 }

@@ -9,10 +9,15 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    private function currentUmkm()
+    {
+        return Auth::user()->umkm;
+    }
+
     // 1. Menampilkan daftar produk milik UMKM yang sedang login
     public function index()
     {
-        $umkm = Auth::user()->umkm;
+        $umkm = $this->currentUmkm();
         
         // Cegah masuk jika belum isi profil UMKM
         if (!$umkm) {
@@ -26,7 +31,7 @@ class ProductController extends Controller
     // 2. Menampilkan form tambah produk
     public function create()
     {
-        if (!Auth::user()->umkm) {
+        if (!$this->currentUmkm()) {
             return redirect()->route('umkm.dashboard')->with('error', 'Silakan isi profil usaha Anda terlebih dahulu.');
         }
         return view('umkm.product.create');
@@ -35,6 +40,12 @@ class ProductController extends Controller
     // 3. Memproses penyimpanan produk dan gambar
     public function store(Request $request)
     {
+        $umkm = $this->currentUmkm();
+
+        if (!$umkm) {
+            return redirect()->route('umkm.dashboard')->with('error', 'Silakan isi profil usaha Anda terlebih dahulu.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
@@ -46,7 +57,7 @@ class ProductController extends Controller
         $imagePath = $request->file('image')->store('products', 'public');
 
         Product::create([
-            'umkm_id' => Auth::user()->umkm->id,
+            'umkm_id' => $umkm->id,
             'name' => $request->name,
             'price' => $request->price,
             'description' => $request->description,
@@ -59,10 +70,16 @@ class ProductController extends Controller
     // 4. Menampilkan form edit produk
     public function edit($id)
     {
+        $umkm = $this->currentUmkm();
+
+        if (!$umkm) {
+            return redirect()->route('umkm.dashboard')->with('error', 'Silakan isi profil usaha Anda terlebih dahulu.');
+        }
+
         $product = Product::findOrFail($id);
 
         // Keamanan: Pastikan UMKM tidak bisa mengedit produk milik UMKM lain
-        if ($product->umkm_id != Auth::user()->umkm->id) {
+        if ($product->umkm_id != $umkm->id) {
             abort(403, 'Anda tidak memiliki akses ke produk ini.');
         }
 
@@ -72,9 +89,15 @@ class ProductController extends Controller
     // 5. Memproses pembaruan data produk
     public function update(Request $request, $id)
     {
+        $umkm = $this->currentUmkm();
+
+        if (!$umkm) {
+            return redirect()->route('umkm.dashboard')->with('error', 'Silakan isi profil usaha Anda terlebih dahulu.');
+        }
+
         $product = Product::findOrFail($id);
 
-        if ($product->umkm_id != Auth::user()->umkm->id) {
+        if ($product->umkm_id != $umkm->id) {
             abort(403, 'Anda tidak memiliki akses ke produk ini.');
         }
 
@@ -109,9 +132,15 @@ class ProductController extends Controller
     // 6. Memproses penghapusan produk
     public function destroy($id)
     {
+        $umkm = $this->currentUmkm();
+
+        if (!$umkm) {
+            return redirect()->route('umkm.dashboard')->with('error', 'Silakan isi profil usaha Anda terlebih dahulu.');
+        }
+
         $product = Product::findOrFail($id);
 
-        if ($product->umkm_id != Auth::user()->umkm->id) {
+        if ($product->umkm_id != $umkm->id) {
             abort(403, 'Anda tidak memiliki akses ke produk ini.');
         }
 

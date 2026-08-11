@@ -15,8 +15,13 @@ class IsUmkm
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Cek apakah user sudah login dan role_id = 2 (Pelaku UMKM)
-        if (auth()->check() && auth()->user()->role_id == 2) {
+        $user = auth()->user();
+
+        // Cek apakah user sudah login dan berperan sebagai Pelaku UMKM
+        if (auth()->check() && (
+            $user->role_id == 2 ||
+            $user->role?->name === 'Pelaku UMKM'
+        )) {
             return $next($request);
         }
 
