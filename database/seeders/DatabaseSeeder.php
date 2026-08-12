@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
 
         // 2. Buat Akun Admin Pertama
         User::create([
-            'name' => 'Admin Desa',
-            'email' => 'admin@desa.com',
-            'password' => bcrypt('password123'),
+            'name' => 'Admin Desa Joho',
+            'email' => 'adminumkmjoho@gmail.com',
+            'password' => bcrypt('podowingi'),
             'role_id' => 1,
         ]);
 
