@@ -26,7 +26,8 @@ class PublicController extends Controller
         }
 
         // 5. Eksekusi pencarian, urutkan dari yang terbaru, lalu paginate 12 item per halaman
-        $umkms = $query->latest()->paginate(12)->withQueryString();
+        // $umkms = $query->latest()->paginate(12)->withQueryString();
+        $umkms = $query->latest()->paginate(12)->appends($request->query());
 
         if ($request->boolean('lazy')) {
             return response()->json([
