@@ -208,7 +208,7 @@
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    class="relative z-10 w-full max-w-4xl flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+                    class="relative z-10 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
                     @click.stop
                 >
                     <!-- Bagian Header -->
@@ -228,7 +228,7 @@
                     </div>
 
                     <!-- Bagian Body (Grid) -->
-                    <div class="grid grid-cols-1 lg:grid-cols-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-5 flex-1 overflow-y-auto">
                         
                         <!-- Sisi Kiri: Gambar Produk (Mengambil porsi 2 kolom di layar besar) -->
                         <div class="bg-slate-100 lg:col-span-2 relative">
