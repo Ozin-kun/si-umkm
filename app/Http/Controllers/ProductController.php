@@ -50,7 +50,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048', // Wajib gambar, maksimal 2MB
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:4096', // Wajib gambar, maksimal 4MB
         ]);
 
         // Simpan gambar ke folder 'products'

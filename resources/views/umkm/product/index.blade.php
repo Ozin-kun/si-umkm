@@ -180,7 +180,7 @@
                     <div>
                         <label class="block text-sm font-medium text-slate-600">Foto Produk</label>                        
                         <input type="file" name="image" required accept="image/*" class="mt-1 block w-full rounded-2xl border border-slate-300 p-2 text-sm text-slate-500 shadow-sm file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100">
-                        <p class="mt-1 text-xs text-slate-500">Ukuran foto maksimal 2MB.</p>
+                        <p class="mt-1 text-xs text-slate-500">Ukuran foto maksimal 4MB.</p>
                     </div>
 
                     <div class="sm:col-span-2">
