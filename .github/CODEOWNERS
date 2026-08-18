@@ -1,0 +1,5 @@
+# Semua file dalam repository harus direview oleh owner
+* @Ozin-kun
+
+# Perubahan pada CODEOWNERS juga harus direview oleh owner
+/.github/CODEOWNERS @Ozin-kun
