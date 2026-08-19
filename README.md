@@ -53,7 +53,7 @@ Jika Anda ingin menjalankan proyek ini di komputer lokal untuk pengembangan lanj
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
-   DB_DATABASE=nama_database_anda
+   DB_DATABASE=your_database_name
    DB_USERNAME=root
    DB_PASSWORD=
 7. Jalankan migrasi dan tanam data bawaan (seeder)
